@@ -8,7 +8,7 @@ pipeline {
     agent {
         kubernetes {
             defaultContainer 'jnlp'
-            yamlFile 'jenkins-pod.yml'
+            yamlFile 'OracleDatabase/SingleInstance/helm-charts/jenkins-pod.yml'
         }
     }
     stages {
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 dir(path: 'OracleDatabase/SingleInstance/helm-charts') {
                     container('k8s') {
-                        sh 'helm repo add ${PROJECT_NAME} ${CHART_REPO_URL} --username ${REGISTRY_CREDENTIAL_USR} --password ${REGISTRY_CREDENTIAL_PSW}'
+                        sh "helm repo add ${PROJECT_NAME} ${CHART_REPO_URL} --username ${REGISTRY_CREDENTIAL_USR} --password ${REGISTRY_CREDENTIAL_PSW}"
                         sh "helm package -d target ./oracle-db"
                         sh "helm push target/oracle-db-*.tgz ${PROJECT_NAME} --username ${REGISTRY_CREDENTIAL_USR} --password ${REGISTRY_CREDENTIAL_PSW}"
                     }
