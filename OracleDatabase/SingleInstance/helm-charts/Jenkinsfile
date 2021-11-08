@@ -1,0 +1,28 @@
+pipeline {
+    environment {
+        REGISTRY_HOST = 'harbor.oci.pkg.recruitco.cf'
+        REGISTRY_CREDENTIAL = credentials('jenkins-harbor')
+        PROJECT_NAME = "oracle"
+        CHART_REPO_URL = "https://${REGISTRY_HOST}/chartrepo/${PROJECT_NAME}"
+    }
+    agent {
+        kubernetes {
+            defaultContainer 'jnlp'
+            yamlFile 'jenkins-pod.yml'
+        }
+    }
+    stages {
+        stage('build chart') {
+            // chart package and publish
+            steps {
+                dir(path: 'OracleDatabase/SingleInstance/helm-charts') {
+                    container('k8s') {
+                        sh 'helm repo add ${PROJECT_NAME} ${CHART_REPO_URL} --username ${REGISTRY_CREDENTIAL_USR} --password ${REGISTRY_CREDENTIAL_PSW}'
+                        sh "helm package -d target ./oracle-db"
+                        sh "helm push target/oracle-db-*.tgz ${PROJECT_NAME} --username ${REGISTRY_CREDENTIAL_USR} --password ${REGISTRY_CREDENTIAL_PSW}"
+                    }
+                }
+            }
+        }
+    }
+}

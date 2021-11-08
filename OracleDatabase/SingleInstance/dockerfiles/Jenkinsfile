@@ -1,0 +1,25 @@
+pipeline {
+    environment {
+        REGISTRY_HOST = 'harbor.oci.pkg.recruitco.cf'
+        REGISTRY_CREDENTIAL = credentials('jenkins-harbor')
+    }
+    agent {
+        kubernetes {
+            defaultContainer 'jnlp'
+            yamlFile 'jenkins-pod.yml'
+        }
+    }
+    stages {
+        stage('build 19c image') {
+            steps {
+                dir(path: 'OracleDatabase/SingleInstance/dockerfiles') {
+                    container('docker') {
+                        sh "./buildContainerImage.sh -e -v 19.3.0 -t ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108"
+                        sh 'docker login -u ${REGISTRY_CREDENTIAL_USR} -p ${REGISTRY_CREDENTIAL_PSW} ${REGISTRY_HOST}'
+                        sh 'docker push ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108'
+                    }
+                }
+            }
+        }
+    }
+}
