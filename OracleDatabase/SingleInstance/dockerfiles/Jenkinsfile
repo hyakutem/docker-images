@@ -18,9 +18,9 @@ pipeline {
                         sh 'ls -la'
                         // bashが無くてエラーになる。。ので、内部で呼んでいるビルドコマンドを直接呼ぶ
                         //sh 'sh buildContainerImage.sh -e -v 19.3.0 -t ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108'
-                        sh 'docker build --force-rm=true --no-cache=true --build-arg DB_EDITION=ee -t ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108 -f Dockerfile .'
-                        sh 'docker login -u ${REGISTRY_CREDENTIAL_USR} -p ${REGISTRY_CREDENTIAL_PSW} ${REGISTRY_HOST}'
-                        sh 'docker push ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108'
+                        sh "docker build --force-rm=true --no-cache=true --build-arg DB_EDITION=ee -t ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108 -f Dockerfile ."
+                        sh "docker login -u ${REGISTRY_CREDENTIAL_USR} -p ${REGISTRY_CREDENTIAL_PSW} ${REGISTRY_HOST}"
+                        sh "docker push ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108"
                     }
                 }
             }
