@@ -14,9 +14,9 @@ pipeline {
             steps {
                 container('docker') {
                     dir(path: 'OracleDatabase/SingleInstance/dockerfiles') {
-                        sh "cp -p /mnt/oracle-images/LINUX.X64_193000_db_home.zip ./19.3.0/"
-                        sh "ls -la ."
-                        sh "buildContainerImage.sh -e -v 19.3.0 -t ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108"
+                        sh 'cp -p /mnt/oracle-images/LINUX.X64_193000_db_home.zip ./19.3.0/'
+                        sh 'ls -la 19.3.0'
+                        sh './buildContainerImage.sh -e -v 19.3.0 -t ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108'
                         sh 'docker login -u ${REGISTRY_CREDENTIAL_USR} -p ${REGISTRY_CREDENTIAL_PSW} ${REGISTRY_HOST}'
                         sh 'docker push ${REGISTRY_HOST}/oracle/database:19.3.0-ee-20211108'
                     }
