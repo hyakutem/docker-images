@@ -6,7 +6,7 @@ pipeline {
     agent {
         kubernetes {
             defaultContainer 'jnlp'
-            yamlFile 'jenkins-pod.yml'
+            yamlFile 'OracleDatabase/SingleInstance/dockerfiles/jenkins-pod.yml'
         }
     }
     stages {
