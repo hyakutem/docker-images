@@ -23,12 +23,19 @@ oracle_edition: enterprise
 ## Enable archive log mode when creating the database
 enable_archivelog: false
 
+## must provide the values in MB and without any units appended to the values
+## Provide both the values, INIT_SGA_SIZE and INIT_PGA_SIZE or neither of them.
+## see: https://github.com/oracle/docker-images/blob/main/OracleDatabase/SingleInstance/dockerfiles/19.3.0/createDB.sh#L167
+## 指定しないとdbcaが自動で決定する(現在の物理メモリの空き領域の40%　になるらしい)
+init_sga_size: 8192
+init_pga_size: 1536
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 persistence:
   ## Oracle database data Persistent Volume Storage Class, nfs or block
-  storageClass: ""
-  size: 100Gi
+  storageClass: "oci-file-storage"
+  size: 30Gi
 
 ## Deploy only on nodes in a particular availability domain, eg PHX-AD-1 on OCI
 ## Leave empty if there is no such requirement
@@ -41,7 +48,7 @@ replicas: 1
 loadBalService: false
 
 ## name of image
-image: container-registry.oracle.com/database/enterprise:19.3.0.0
+image: harbor.oci.pkg.recruitco.cf/oracle/database:19.3.0-ee-20211108
 
 ## image pull policy, IfNotPresent or Always
 imagePullPolicy: Always

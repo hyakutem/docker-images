@@ -36,11 +36,23 @@ env:
         name: {{ template "fullname" . }}
         key: oracle_pwd
   - name: ORACLE_CHARACTERSET
-    value: {{ default "ORCLPDB1" .Values.oracle_characterset | quote }}
+    value: {{ default "AL32UTF8" .Values.oracle_characterset | quote }}
   - name: ORACLE_EDITION
     value: {{ default "enterprise" .Values.oracle_edition | quote }}
   - name: ENABLE_ARCHIVELOG
     value: {{ default false .Values.enable_archivelog | quote}}
+  - name: INIT_SGA_SIZE
+    value: {{ default 4096 .Values.init_sga_size | quote}}
+  - name: INIT_PGA_SIZE
+    value: {{ default 1024 .Values.init_pga_size | quote}}
+  - name: TZ
+    value: Asia/Tokyo
+  - name: LANG
+    value: ja_JP.UTF-8
+  - name: LANGUAGE
+    value: ja_JP.ja
+  - name: NLS_LANG
+    value: American_Japan.AL32UTF8
 {{- end }}
 {{/* oracle db labels */}}
 {{- define "oracle-db-labels" }}
