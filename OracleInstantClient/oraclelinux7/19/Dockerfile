@@ -75,7 +75,10 @@ ARG release=19
 ARG update=13
 
 RUN  yum -y install oracle-release-el7 && \
-     yum -y install oracle-instantclient${release}.${update}-basic oracle-instantclient${release}.${update}-devel oracle-instantclient${release}.${update}-sqlplus && \
+     yum -y install oracle-instantclient${release}.${update}-basic \
+         oracle-instantclient${release}.${update}-devel \
+         oracle-instantclient${release}.${update}-tools \
+         oracle-instantclient${release}.${update}-sqlplus && \
      rm -rf /var/cache/yum
 
 # Uncomment if the tools package is added

@@ -1,0 +1,25 @@
+pipeline {
+    environment {
+        REGISTRY_HOST = 'harbor.oci.pkg.recruitco.cf'
+        REGISTRY_CREDENTIAL = credentials('jenkins-harbor')
+    }
+    agent {
+        kubernetes {
+            defaultContainer 'jnlp'
+            yamlFile 'OracleInstantClient/oraclelinux7/jenkins-pod.yml'
+        }
+    }
+    stages {
+        stage('build client image') {
+            steps {
+                container('docker') {
+                    dir(path: 'OracleInstantClient/oraclelinux7/19') {
+                        sh "docker build --pull -t ${REGISTRY_HOST}/oracle/oraclelinux7-instantclient:19 ."
+                        sh "docker login -u ${REGISTRY_CREDENTIAL_USR} -p ${REGISTRY_CREDENTIAL_PSW} ${REGISTRY_HOST}"
+                        sh "docker push ${REGISTRY_HOST}/oracle/oraclelinux7-instantclient:19 ."
+                    }
+                }
+            }
+        }
+    }
+}
