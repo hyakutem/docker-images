@@ -1,0 +1,41 @@
+pipeline {
+    environment {
+        MINIO_ENDPOINT = 'https://minio-api.oci.pkg.recruitco.cf'
+        MINIO_CREDENTIAL = credentials('jenkins-minio')
+        REGISTRY_HOST = 'harbor.oci.pkg.recruitco.cf'
+        REGISTRY_CREDENTIAL = credentials('jenkins-harbor')
+    }
+    agent {
+        kubernetes {
+            defaultContainer 'jnlp'
+            yamlFile 'OracleDatabase/SingleInstance/dockerfiles/jenkins-pod-21c.yml'
+        }
+    }
+    stages {
+        stage('copy 21c image') {
+            steps {
+                container('minio') {
+                    // 予めminioに配置しておいたOracleのインストールイメージを作業ディレクトリへコピー
+                    dir(path: 'OracleDatabase/SingleInstance/dockerfiles/21.3.0') {
+                        sh 'mc alias set ocipkg ${MINIO_ENDPOINT} ${MINIO_CREDENTIAL_USR} ${MINIO_CREDENTIAL_PSW} --api S3v4'
+                        sh 'mc cp ocipkg/oracle-images/LINUX.X64_213000_db_home.zip .'
+                        sh 'ls -la'
+                    }
+                }
+            }
+        }
+        stage('build image') {
+            steps {
+                container('docker') {
+                    dir(path: 'OracleDatabase/SingleInstance/dockerfiles/21.3.0') {
+                        // bashが無くてエラーになる。。ので、内部で呼んでいるビルドコマンドを直接呼ぶ
+                        //sh 'sh buildContainerImage.sh -e -v 21.3.0 -t ${REGISTRY_HOST}/oracle/database:21.3.0-ee-20211116'
+                        sh "docker build --force-rm=true --no-cache=true --build-arg DB_EDITION=ee -t ${REGISTRY_HOST}/oracle/database:21.3.0-ee-20211116 -f Dockerfile ."
+                        sh "docker login -u ${REGISTRY_CREDENTIAL_USR} -p ${REGISTRY_CREDENTIAL_PSW} ${REGISTRY_HOST}"
+                        sh "docker push ${REGISTRY_HOST}/oracle/database:21.3.0-ee-20211116"
+                    }
+                }
+            }
+        }
+    }
+}
