@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        REGISTRY_HOST = 'harbor.oci.pkg.recruitco.cf'
+        REGISTRY_HOST = 'harbor.dev.asg.x.recruit.co.jp'
         REGISTRY_CREDENTIAL = credentials('jenkins-harbor')
         PROJECT_NAME = "oracle"
         CHART_REPO_URL = "https://${REGISTRY_HOST}/chartrepo/${PROJECT_NAME}"

@@ -34,7 +34,7 @@ init_pga_size: 1536
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 persistence:
   ## Oracle database data Persistent Volume Storage Class, nfs or block
-  storageClass: "oci-file-storage"
+  storageClass: "nfs-storage"
   size: 30Gi
 
 ## Deploy only on nodes in a particular availability domain, eg PHX-AD-1 on OCI
@@ -48,7 +48,7 @@ replicas: 1
 loadBalService: false
 
 ## name of image
-image: harbor.oci.pkg.recruitco.cf/oracle/database:19.3.0-ee-20211108
+image: harbor.dev.asg.x.recruit.co.jp/oracle/database:19.3.0-ee-20220825
 
 ## image pull policy, IfNotPresent or Always
 imagePullPolicy: Always
