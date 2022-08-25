@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        REGISTRY_HOST = 'harbor.oci.pkg.recruitco.cf'
+        REGISTRY_HOST = 'harbor.dev.asg.x.recruit.co.jp'
         REGISTRY_CREDENTIAL = credentials('jenkins-harbor')
     }
     agent {
